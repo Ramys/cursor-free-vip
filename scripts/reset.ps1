@@ -103,7 +103,7 @@ function Cleanup {
 
 try {
     # URL de download
-    $url = "https://github.com/Ramys/cursor-free-vip/releases/download/ManualReset/reset_machine_manual.exe"
+    $url = "https://github.com/yeongpin/cursor-free-vip/releases/download/ManualReset/reset_machine_manual.exe"
     $output = Join-Path $TmpDir "reset_machine_manual.exe"
 
     # Download do arquivo
