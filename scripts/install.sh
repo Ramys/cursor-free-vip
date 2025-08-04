@@ -39,7 +39,7 @@ get_downloads_dir() {
 # Get latest version
 get_latest_version() {
     echo -e "${CYAN}ℹ️ Checking latest version...${NC}"
-    latest_release=$(curl -s https://api.github.com/repos/Ramys/cursor-free-vip/releases/latest) || {
+    latest_release=$(curl -s https://api.github.com/repos/yeongpin/cursor-free-vip/releases/latest) || {
         echo -e "${RED}❌ Cannot get latest version information${NC}"
         exit 1
     }
@@ -140,7 +140,7 @@ install_cursor_free_vip() {
         elif [[ "$OS" == "linux_x64" || "$OS" == "linux_arm64" ]]; then
             OS="linux"
             binary_name="CursorFreeVIP_${VERSION}_${OS}"
-            download_url="https://github.com/Ramys/cursor-free-vip/releases/download/v${VERSION}/${binary_name}"
+            download_url="https://github.com/yeongpin/cursor-free-vip/releases/download/v${VERSION}/${binary_name}"
             echo -e "${CYAN}ℹ️ New download link: ${download_url}${NC}"
             
             if ! curl --output /dev/null --silent --head --fail "$download_url"; then
