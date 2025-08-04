@@ -1,9 +1,9 @@
-# 檢查是否是通過權限提升啟動的
+# Verifica se foi iniciado com privilégios elevados
 param(
     [switch]$Elevated
 )
 
-# 設置顏色主題
+# Configuração do tema de cores
 $Theme = @{
     Primary   = 'Cyan'
     Success   = 'Green'
@@ -12,7 +12,7 @@ $Theme = @{
     Info      = 'White'
 }
 
-# ASCII Logo
+# Logo em ASCII
 $Logo = @"
 ██████╗ ███████╗███████╗███████╗████████╗    ████████╗ ██████╗  ██████╗ ██╗     
 ██╔══██╗██╔════╝██╔════╝██╔════╝╚══██╔══╝    ╚══██╔══╝██╔═══██╗██╔═══██╗██║     
@@ -22,7 +22,7 @@ $Logo = @"
 ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝   ╚═╝          ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝
 "@
 
-# 美化輸出函數
+# Função para saída estilizada
 function Write-Styled {
     param (
         [string]$Message,
@@ -45,22 +45,22 @@ function Write-Styled {
     }
 }
 
-# 檢查管理員權限
+# Verifica privilégios de administrador
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 if (-NOT $isAdmin) {
-    Write-Styled "需要管理員權限來運行重置工具" -Color $Theme.Warning -Prefix "權限"
-    Write-Styled "正在請求管理員權限..." -Color $Theme.Primary -Prefix "提升"
+    Write-Styled "É necessário executar como administrador" -Color $Theme.Warning -Prefix "Permissão"
+    Write-Styled "Solicitando privilégios elevados..." -Color $Theme.Primary -Prefix "Elevação"
     
-    # 顯示操作選項
-    Write-Host "`n選擇操作:" -ForegroundColor $Theme.Primary
-    Write-Host "1. 請求管理員權限" -ForegroundColor $Theme.Info
-    Write-Host "2. 退出程序" -ForegroundColor $Theme.Info
+    # Mostra opções de ação
+    Write-Host "`nOpções:" -ForegroundColor $Theme.Primary
+    Write-Host "1. Executar como administrador" -ForegroundColor $Theme.Info
+    Write-Host "2. Sair" -ForegroundColor $Theme.Info
     
-    $choice = Read-Host "`n請輸入選項 (1-2)"
+    $choice = Read-Host "`nDigite a opção (1-2)"
     
     if ($choice -ne "1") {
-        Write-Styled "操作已取消" -Color $Theme.Warning -Prefix "取消"
-        Write-Host "`n按任意鍵退出..." -ForegroundColor $Theme.Info
+        Write-Styled "Operação cancelada" -Color $Theme.Warning -Prefix "Cancelado"
+        Write-Host "`nPressione qualquer tecla para sair..." -ForegroundColor $Theme.Info
         $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
         exit
     }
@@ -70,31 +70,31 @@ if (-NOT $isAdmin) {
         exit
     }
     catch {
-        Write-Styled "無法獲取管理員權限" -Color $Theme.Error -Prefix "錯誤"
-        Write-Styled "請以管理員身份運行 PowerShell 後重試" -Color $Theme.Warning -Prefix "提示"
-        Write-Host "`n按任意鍵退出..." -ForegroundColor $Theme.Info
+        Write-Styled "Falha ao obter privilégios de administrador" -Color $Theme.Error -Prefix "Erro"
+        Write-Styled "Execute o PowerShell como administrador e tente novamente" -Color $Theme.Warning -Prefix "Aviso"
+        Write-Host "`nPressione qualquer tecla para sair..." -ForegroundColor $Theme.Info
         $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
         exit 1
     }
 }
 
-# 如果是提升權限後的窗口，等待一下確保窗口可見
+# Se a janela foi aberta com privilégios elevados, aguarda um momento
 if ($Elevated) {
     Start-Sleep -Seconds 1
 }
 
-# 顯示 Logo
+# Exibe o logo
 Write-Host $Logo -ForegroundColor $Theme.Primary
-Write-Host "Created by YeongPin`n" -ForegroundColor $Theme.Info
+Write-Host "Criado por Ramys`n" -ForegroundColor $Theme.Info
 
-# 設置 TLS 1.2
+# Configura TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-# 創建臨時目錄
+# Cria diretório temporário
 $TmpDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $TmpDir -Force | Out-Null
 
-# 清理函數
+# Função de limpeza
 function Cleanup {
     if (Test-Path $TmpDir) {
         Remove-Item -Recurse -Force $TmpDir -ErrorAction SilentlyContinue
@@ -102,26 +102,26 @@ function Cleanup {
 }
 
 try {
-    # 下載地址
-    $url = "https://github.com/yeongpin/cursor-free-vip/releases/download/ManualReset/reset_machine_manual.exe"
+    # URL de download
+    $url = "https://github.com/Ramys/cursor-free-vip/releases/download/ManualReset/reset_machine_manual.exe"
     $output = Join-Path $TmpDir "reset_machine_manual.exe"
 
-    # 下載文件
-    Write-Styled "正在下載重置工具..." -Color $Theme.Primary -Prefix "下載"
+    # Download do arquivo
+    Write-Styled "Baixando ferramenta de reset..." -Color $Theme.Primary -Prefix "Download"
     Invoke-WebRequest -Uri $url -OutFile $output
-    Write-Styled "下載完成！" -Color $Theme.Success -Prefix "完成"
+    Write-Styled "Download concluído!" -Color $Theme.Success -Prefix "Concluído"
 
-    # 執行重置工具
-    Write-Styled "正在啟動重置工具..." -Color $Theme.Primary -Prefix "執行"
+    # Executa a ferramenta de reset
+    Write-Styled "Iniciando ferramenta de reset..." -Color $Theme.Primary -Prefix "Execução"
     Start-Process -FilePath $output -Wait
-    Write-Styled "重置完成！" -Color $Theme.Success -Prefix "完成"
+    Write-Styled "Reset concluído!" -Color $Theme.Success -Prefix "Concluído"
 }
 catch {
-    Write-Styled "操作失敗" -Color $Theme.Error -Prefix "錯誤"
+    Write-Styled "Falha na operação" -Color $Theme.Error -Prefix "Erro"
     Write-Styled $_.Exception.Message -Color $Theme.Error
 }
 finally {
     Cleanup
-    Write-Host "`n按任意鍵退出..." -ForegroundColor $Theme.Info
+    Write-Host "`nPressione qualquer tecla para sair..." -ForegroundColor $Theme.Info
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-} 
+}
