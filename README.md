@@ -75,12 +75,12 @@ For optimal performance, run with privileges and always stay up to date.
 ### **Linux/macOS**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yeongpin/cursor-free-vip/main/scripts/install.sh -o install.sh && chmod +x install.sh && ./install.sh
+curl -fsSL https://raw.githubusercontent.com/Ramys/cursor-free-vip/main/scripts/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 ```
 
-### **Archlinux**
+### **Archlinux** (Removed from aur)
 
-Install via [AUR](https://aur.archlinux.org/packages/cursor-free-vip-git)
+~~Install via [AUR](https://aur.archlinux.org/packages/cursor-free-vip-git)~~
 
 ```bash
 yay -S cursor-free-vip-git
